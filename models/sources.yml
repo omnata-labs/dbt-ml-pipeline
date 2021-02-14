@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: bank
+    schema: dbt_dev_james
+    tables:
+      - name: customers
+      - name: customer_products
+      - name: customer_transactions
+      - name: products
+      - name: credit_check_results
+

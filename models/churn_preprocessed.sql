@@ -17,7 +17,7 @@ scaled_values as (
                                             source_columns=['CREDITSCORE','AGE','TENURE','BALANCE','NUMOFPRODUCTS','ESTIMATEDSALARY'],
                                             include_columns=['ID']) }}
 )
-select ID,
+select churn.ID,
         churn.EXITED,
         scaled_values.CREDITSCORE_scaled,
         scaled_values.AGE_scaled,
