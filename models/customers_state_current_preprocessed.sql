@@ -1,4 +1,7 @@
-{{ config(materialized='view') }}
+{{ config(
+  materialized='incremental',
+  unique_key='CUSTOMER_ID')
+}}
 
 with geography_encoded as (
     {{ dbt_ml_preprocessing.one_hot_encoder(source_table=ref('customers_state_current_imputed'),
@@ -18,6 +21,7 @@ scaled_values as (
                                             include_columns=['CUSTOMER_ID']) }}
 )
 select churn.CUSTOMER_ID,
+        DBT_UPDATED_AT,
         scaled_values.CREDITSCORE_scaled,
         scaled_values.AGE_scaled,
         scaled_values.TENURE_scaled,
@@ -35,3 +39,9 @@ from {{ ref('customers_state_current_imputed') }} as churn
 join geography_encoded on churn.CUSTOMER_ID = geography_encoded.CUSTOMER_ID
 join gender_encoded on churn.CUSTOMER_ID = gender_encoded.CUSTOMER_ID
 join scaled_values on churn.CUSTOMER_ID = scaled_values.CUSTOMER_ID
+
+{% if is_incremental() %}
+
+  and churn.DBT_UPDATED_AT > (select max(DBT_UPDATED_AT) from {{ this }})
+
+{% endif %}

@@ -1,4 +1,4 @@
-{% snapshot customer_state_snapshot %}
+{% snapshot customers_state_snapshot %}
 
 {{
     config(
@@ -35,7 +35,6 @@ qualify lead(customer_id) over (partition by customer_id order by check_date) is
 current_tenure as(
 select customer_id,start_date
 from {{ source('bank','customer_products') }}
-where end_date is null
 qualify lag(customer_id) over (partition by customer_id order by start_date) is null
 ),
 active_account_count as(
@@ -55,7 +54,7 @@ select customers.CUSTOMER_ID,
         (select count(*) from CUSTOMER_PRODUCTS cp where cp.CUSTOMER_ID = customers.CUSTOMER_ID and END_DATE is null) as NUMOFPRODUCTS,
         iff(credit_card_count.account_count>0,1,0) as HASCRCARD,
         iff(recent_transactions_count.transactions_count>0,1,0) as ISACTIVEMEMBER,
-        iff(active_account_count.account_count>0,0,1) as EXITED
+        iff(active_account_count.account_count>0,0,1) as EXITED,
         ESTIMATEDSALARY
 from {{ source('bank','customers') }}
 left outer join savings_account_balance on savings_account_balance.customer_id = customers.customer_id

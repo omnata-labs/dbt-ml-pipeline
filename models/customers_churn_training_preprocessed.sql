@@ -1,4 +1,4 @@
-{{ config(materialized='view') }}
+{{ config(materialized='table') }}
 
 with geography_encoded as (
     {{ dbt_ml_preprocessing.one_hot_encoder(source_table=ref('customers_churn_training_imputed'),

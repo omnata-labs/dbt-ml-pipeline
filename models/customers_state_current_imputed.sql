@@ -1,4 +1,7 @@
-{{ config(materialized='view') }}
+{{ config(
+  materialized='incremental',
+  unique_key='CUSTOMER_ID')
+}}
 
 with aggregates as(
     select MEDIAN(BALANCE) as BALANCE_MEDIAN 
@@ -6,6 +9,7 @@ with aggregates as(
     where BALANCE <> 0
 )
 select CUSTOMER_ID,
+        DBT_UPDATED_AT,
         CREDITSCORE,
         GEOGRAPHY,
         GENDER,
@@ -16,4 +20,10 @@ select CUSTOMER_ID,
         HASCRCARD,
         ISACTIVEMEMBER,
         ESTIMATEDSALARY
-from {{ ref('customers_state_current') }} churn, aggregates
+from {{ ref('customers_state_current') }} customer_state, aggregates
+
+{% if is_incremental() %}
+
+  where customer_state.DBT_UPDATED_AT > (select max(DBT_UPDATED_AT) from {{ this }})
+
+{% endif %}
