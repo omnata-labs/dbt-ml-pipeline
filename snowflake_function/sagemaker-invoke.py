@@ -1,4 +1,4 @@
-import json,datetime,decimal,boto3,logging
+import json,datetime,decimal,boto3,logging,os,sys,traceback
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -62,6 +62,15 @@ def lambda_handler(event, context):
         status_code = 400
         # Tell caller what this function could not handle.
         json_compatible_string_to_return = json.dumps({"data" : row,"error" : str(err)})
+        # Log a nice error for the Lambda logs
+        exception_type, exception_value, exception_traceback = sys.exc_info()
+        traceback_string = traceback.format_exception(exception_type, exception_value, exception_traceback)
+        err_msg = json.dumps({
+            "errorType": exception_type.__name__,
+            "errorMessage": str(exception_value),
+            "stackTrace": traceback_string
+        })
+        logger.error(err_msg)
 
     # Return the return value and HTTP status code.
     return {

@@ -3,3 +3,4 @@ target/
 dbt_modules/
 logs/
 snowflake_function/node_modules/
+snowflake_function/.serverless/**
