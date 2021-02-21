@@ -23,7 +23,7 @@ and EXITED=0
 
 {% if is_incremental() %}
 
-  and customer_state.DBT_UPDATED_AT > (select max(DBT_UPDATED_AT) from {{ this }})
+  and customer_state.DBT_UPDATED_AT > (select coalesce(max(DBT_UPDATED_AT),'1900-01-01'::date) from {{ this }})
 
 {% endif %}
 

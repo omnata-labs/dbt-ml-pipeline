@@ -42,6 +42,6 @@ join scaled_values on churn.CUSTOMER_ID = scaled_values.CUSTOMER_ID
 
 {% if is_incremental() %}
 
-  and churn.DBT_UPDATED_AT > (select max(DBT_UPDATED_AT) from {{ this }})
+  and churn.DBT_UPDATED_AT > (select coalesce(max(DBT_UPDATED_AT),'1900-01-01'::date) from {{ this }})
 
 {% endif %}

@@ -1,4 +1,0 @@
---select * from customers_state_current
---select * from customers_state_current_imputed
---select * from customers_state_current_preprocessed
---select * from customers_current_predictions

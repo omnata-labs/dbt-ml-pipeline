@@ -24,6 +24,6 @@ from {{ ref('customers_state_current') }} customer_state, aggregates
 
 {% if is_incremental() %}
 
-  where customer_state.DBT_UPDATED_AT > (select max(DBT_UPDATED_AT) from {{ this }})
+  where customer_state.DBT_UPDATED_AT > (select coalesce(max(DBT_UPDATED_AT),'1900-01-01'::date) from {{ this }})
 
 {% endif %}
