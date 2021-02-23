@@ -2,10 +2,10 @@
 
 with aggregates as(
     select MEDIAN(BALANCE) as BALANCE_MEDIAN 
-    from {{ ref('churn') }}
+    from {{ ref('customers_churn_training') }}
     where BALANCE <> 0
 )
-select ROWNUMBER as ID,
+select CUSTOMER_ID,
         CREDITSCORE,
         GEOGRAPHY,
         GENDER,
@@ -18,4 +18,4 @@ select ROWNUMBER as ID,
         ESTIMATEDSALARY,
         EXITED
 
-from {{ ref('churn') }} churn, aggregates
+from {{ ref('customers_churn_training') }} churn, aggregates
