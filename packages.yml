@@ -5,7 +5,7 @@ packages:
     revision: 0.6.0
 
   - git: "https://github.com/omnata-labs/dbt-omnata-push.git"
-    revision: 0.2.0
+    revision: 0.3.0
 
   - package: fishtown-analytics/dbt_utils
     version: 0.6.4
